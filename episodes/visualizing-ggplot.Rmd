@@ -15,7 +15,7 @@ exercises: 0
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
-- Produce scatter plots and boxplots using `ggplot2`.
+- Produce scatter plots and bar charts using `ggplot2`.
 - Represent data variables with plot components.
 - Modify the scales of plot components.
 - Iteratively build and modify `ggplot2` plots by adding layers.
@@ -355,8 +355,6 @@ ggplot(data = complete_old, mapping = aes(x = plot_type, y = hindfoot_length)) +
 
 Now we can see all the raw data and our bar charts on top.
 
-Now we can see all the raw data and our boxplots on top.
-
 ## Error Bars
 
 Bar charts do not show the spread of data as well as box plots or violin plots. We can illustrate our spread of data by including error bars, which can be calculated using different statistical analyses. Here, we will illustrate error bars using a mean standard error, which shows precision of the mean estimate. You can also calculate error bars using the standard deviation.
@@ -473,9 +471,8 @@ Because there are so many possible arguments to the `theme()` function, it can s
 
 ::::::::::::::::::::::::::::: callout
 
-You may have noticed that we have used 3 different approaches to getting rid of something in `ggplot`: 
+You may have noticed that we have used 2 different approaches to getting rid of something in `ggplot`: 
 
-- `outlier.shape = NA` to remove the outliers from our boxplot
 - `panel.grid.major.x = element_blank()` to remove the x grid lines
 - `legend.position = "none"` to remove our legend
 
