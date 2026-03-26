@@ -4,7 +4,7 @@ site: sandpaper::sandpaper_site
 
 :::::::::::::::::::::::::: callout
 
-## This lesson changed a lot recently!
+**This lesson changed a lot recently!**
 
 You may notice some big changes in the content of this lesson since you last visited. 
 
