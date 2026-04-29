@@ -363,7 +363,7 @@ Because the `ggplot()` function takes the data as its first argument, you can ac
 
 :::::::::::::::::::::::: solution 
 
-```{r date-plot-challenge-answer}
+```{r date-plot-challenge-answer, fig.alt = "Scatter plot showing the weight of the samples (in the y-axis), across time (with the date column in the x-axis)"}
 surveys %>% 
   mutate(date = ymd(paste(year, month, day, sep = "-"))) %>% 
   ggplot(aes(x = date, y = weight)) +
@@ -516,7 +516,7 @@ surveys_daily_counts <- surveys %>%
 
 :::::::::::::::::::::::: solution 
 
-```{r time-series-challenge-answer}
+```{r time-series-challenge-answer, fig.alt="Line plot of the number of animals caught (in the y-axis) by date (x-axis) and sex of the animal (different colored lines for each sex)"}
 surveys_daily_counts %>% 
   ggplot(aes(x = date, y = n, color = sex)) +
   geom_line()
