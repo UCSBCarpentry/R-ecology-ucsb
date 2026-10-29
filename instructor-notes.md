@@ -36,18 +36,6 @@ directory and/or are not in the correct working directory, the `download.file`
 command will produce an error. Therefore, it is important to use the stickies at
 this point.
 
-## The handout
-
-The [code handout](files/code-handout.R)
-(a link to download it is also available on the top bar of the lesson website)
-is useful for Data Carpentry workshops. It includes an outline of the lesson
-content, the text for the challenges, the links for the files that need to be
-downloaded for the lesson, and pieces of code that may be difficult to type for
-learners with no programming experience/who are unfamiliar with R's syntax. We
-encourage you to distribute it to the learners at the beginning of the
-lesson. As an instructor, we encourage you to do the live coding directly in
-this file, so the participants can follow along.
-
 ## R Version
 
 With the release of R 4.0.0 in early 2020, an important change has been made
@@ -64,6 +52,10 @@ factors, regardless of the R version.
 
 Nevertheless, it is recommended that learners install a version of R ≥4.0.0,
 and instructors and helpers should be aware of this potential source of error.
+
+## RStudio and Posit
+
+Before 2022, the term RStudio referred to both the RStudio IDE and the RStudio company. In 2022, [RStudio Public Benefit Company became Posit Public Benefit Company](https://posit.co/blog/rstudio-is-becoming-posit). Many RStudio links redirect to the relevant page on the Posit site. The Open Source RStudio IDE is downloaded from Posit. Links and language in this lesson have been updated.
 
 ## RStudio and Multiple R Installs
 
@@ -253,5 +245,5 @@ maintainers by email or
 [open an issue](https://github.com/fishtree-attempt/R-ecology-lesson/issues/new).
 
 For a more in-depth coverage of topics of the workshops, you may want to read
-"[R for Data Science](https://r4ds.had.co.nz/)" by Hadley Wickham and Garrett
+"[R for Data Science (2e)](https://r4ds.hadley.nz)" by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett
 Grolemund.
