@@ -36,18 +36,6 @@ directory and/or are not in the correct working directory, the `download.file`
 command will produce an error. Therefore, it is important to use the stickies at
 this point.
 
-## The handout
-
-The [code handout](files/code-handout.R)
-(a link to download it is also available on the top bar of the lesson website)
-is useful for Data Carpentry workshops. It includes an outline of the lesson
-content, the text for the challenges, the links for the files that need to be
-downloaded for the lesson, and pieces of code that may be difficult to type for
-learners with no programming experience/who are unfamiliar with R's syntax. We
-encourage you to distribute it to the learners at the beginning of the
-lesson. As an instructor, we encourage you to do the live coding directly in
-this file, so the participants can follow along.
-
 ## R Version
 
 With the release of R 4.0.0 in early 2020, an important change has been made
