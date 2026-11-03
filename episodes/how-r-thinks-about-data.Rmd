@@ -235,7 +235,7 @@ To continue the example we have been using, let's say we collected the weight an
 We can create a vector from scratch with the weights, as for this we can use the `c()` function, putting values inside, separated by commas.
 
 ```{r c-vector}
-c(1, 2, 5, 12, 4)
+c(10, 62, 53, 12, 45)
 ```
 
 As you can see, those values get printed out in the console, just like with `complete_old$year` or `surveys$year`. To store this vector so we can continue to work with it, we need to assign it to an object.
@@ -277,6 +277,7 @@ Since vectors can only hold one type of data, something has to be done when we t
 1. What type will each of these vectors be? Try to guess without running any code at first, then run the code and use `class()` to verify your answers.
 
 ```{r coercion-challenge}
+wt_mistake <- c(1, 4, "6F", 9)
 num_logi <- c(1, 4, 6, TRUE)
 num_char <- c(1, 3, "10", 6)
 char_logi <- c("a", "b", TRUE)
@@ -288,6 +289,7 @@ tricky <- c("a", "b", "1", FALSE)
 :::::::::::::::::::::::: solution 
 
 ```{r coercion-challenge-answer}
+class(wt_mistake)
 class(num_logi)
 class(num_char)
 class(char_logi)
@@ -348,93 +350,6 @@ This is a very good thing, since we won't accidentally forget to consider our mi
 min(wt, na.rm = TRUE)
 ```
 
-## Vectors as arguments
-
-A common reason to create a vector from scratch is to use in a function argument. The `quantile()` function will calculate a quantile for a given vector of numeric values. We set the quantile using the `probs` argument. We also need to set `na.rm = TRUE`, since there are `NA` values in the `weight` column.
-
-```{r single-quantile}
-quantile(complete_old$weight, probs = 0.25, na.rm = TRUE)
-```
-
-Now we get back the 25% quantile value for weights. However, we often want to know more than one quantile. Luckily, the `probs` argument is **vectorized**, meaning it can take a whole vector of values. Let's try getting the 25%, 50% (median), and 75% quantiles all at once.
-
-```{r multi-quantile}
-quantile(complete_old$weight, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-```
-
-While the `c()` function is very flexible, it doesn't necessarily scale well. If you want to generate a long vector from scratch, you probably don't want to type everything out manually. There are a few functions that can help generate vectors.
-
-First, putting `:` between two numbers will generate a vector of integers starting with the first number and ending with the last. The `seq()` function allows you to generate similar sequences, but changing by any amount.
-
-```{r seq}
-# generates a sequence of integers
-1:10
-
-# with seq() you can generate sequences with a combination of:
-# from: starting value
-# to: ending value
-# by: how much should each entry increase
-# length.out: how long should the resulting vector be
-seq(from = 0, to = 1, by = 0.1)
-
-seq(from = 0, to = 1, length.out = 50)
-
-seq(from = 0, by = 0.01, length.out = 20)
-```
-
-Finally, the `rep()` function allows you to repeat a value, or even a whole vector, as many times as you want, and works with any type of vector.
-
-```{r rep}
-# repeats "a" 12 times
-rep("a", times = 12)
-
-# repeats this whole sequence 4 times
-rep(c("a", "b", "c"), times = 4)
-
-# repeats each value 4 times
-rep(1:10, each = 4)
-```
-
-::::::::::::::::::::::::::::::::::::: challenge 
-
-## Challenge 2: Creating sequences
-
-1. Write some code to generate the following vector:
-
-```{r seq-chalenge, echo=FALSE}
-rep(-3:3, 3)
-```
-
-:::::::::::::::::::::::: solution 
-
-```{r seq-challenge-answer}
-rep(-3:3, 3)
-
-# this also works
-rep(seq(from = -3, to = 3, by = 1), 3)
-
-# you might also store the sequence as an intermediate vector
-
-my_seq <- seq(from = -3, to = 3, by = 1)
-rep(my_seq, 3)
-```
-
-::::::::::::::::::::::::
-
-2. Calculate the quantiles for the `complete_old` hindfoot lengths at every 5% level (0%, 5%, 10%, 15%, etc.)
-
-:::::::::::::::::::::::: solution 
-
-```{r quantiles-challenge-answer}
-quantile(complete_old$hindfoot_length, 
-         probs = seq(from = 0, to = 1, by = 0.05),
-         na.rm = T)
-```
-
-::::::::::::::::::::::::
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-
 ## Building with vectors
 
 We have now seen vectors in a few different forms: as columns in a data.frame and as single vectors. However, they can be manipulated into lots of other shapes and forms. Some other common forms are:
@@ -456,10 +371,23 @@ We have now seen vectors in a few different forms: as columns in a data.frame an
 
 ### Factors
 
-We will spend a bit more time talking about factors, since they are often a challenging type of data to work with. We can create a factor from scratch by putting a character vector made using `c()` into the `factor()` function:
+We will spend a bit more time talking about factors, since they are often a challenging type of data to work with. 
+
+To give a practical example of how this is useful, let's say we want to customize a plot that shows the average hind foot lenght per sex:
+
+```{r avg_lenght_sex, fig.alt = "Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex"}
+ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
+  geom_bar(stat = "summary", fun = "mean")
+```
+
+Depending on our purpose, we might want to change the order of the categories on the x-axis, or change the labels.
+We can do this by setting our desired variable as a factor.
+Let's start from the basics, understanding how factors work. 
+
+We can create a factor from scratch by putting a character vector made using `c()` into the `factor()` function:
 
 ```{r factors}
-sex <- factor(c("male", "female", "female", "male", "female", NA))
+sex <- factor(c("M", "F", "F", "M", "F", NA))
 
 sex
 ```
@@ -476,13 +404,35 @@ The **`forcats`** package from the `tidyverse` has a lot of convenient functions
 library(forcats)
 
 # change the order of the levels
-fct_relevel(sex, c("male", "female"))
+fct_relevel(sex, c("M", "F"))
 
 # change the names of the levels
-fct_recode(sex, "M" = "male", "F" = "female")
+fct_recode(sex, "Male" = "M", "Female" = "F")
 
 # turn NAs into an actual factor level (useful for including NAs in plots)
 fct_na_value_to_level(sex, "(Missing)")
+
+```
+
+Now, we can do this to our `surveys$sex` variable to change our actual dataset.
+
+```{r factor-sex-change}
+# Change our variable type to factor
+surveys$sex <- factor(surveys$sex)
+
+# Show what levels or categories our factor variable has
+levels(surveys$sex)
+```
+
+``` {r factor-sex-plot}
+# The same steps we did before to change our factor variable
+surveys$sex <-fct_relevel(surveys$sex, c("M", "F"))
+surveys$sex <-fct_recode(surveys$sex, "Male" = "M", "Female" = "F")
+surveys$sex <-fct_na_value_to_level(surveys$sex, "(Missing)")
+
+# Now the plot
+ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
+  geom_bar(stat = "summary", fun = "mean")
 
 ```
 
