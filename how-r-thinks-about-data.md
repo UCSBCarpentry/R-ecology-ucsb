@@ -400,11 +400,11 @@ We can create a vector from scratch with the weights, as for this we can use the
 
 
 ``` r
-c(1, 2, 5, 12, 4)
+c(10, 62, 53, 12, 45)
 ```
 
 ``` output
-[1]  1  2  5 12  4
+[1] 10 62 53 12 45
 ```
 
 As you can see, those values get printed out in the console, just like with `complete_old$year` or `surveys$year`. To store this vector so we can continue to work with it, we need to assign it to an object.
@@ -463,6 +463,7 @@ Since vectors can only hold one type of data, something has to be done when we t
 
 
 ``` r
+wt_mistake <- c(1, 4, "6F", 9)
 num_logi <- c(1, 4, 6, TRUE)
 num_char <- c(1, 3, "10", 6)
 char_logi <- c("a", "b", TRUE)
@@ -473,6 +474,14 @@ tricky <- c("a", "b", "1", FALSE)
 
 :::::::::::::::::::::::: solution 
 
+
+``` r
+class(wt_mistake)
+```
+
+``` output
+[1] "character"
+```
 
 ``` r
 class(num_logi)
@@ -584,181 +593,6 @@ min(wt, na.rm = TRUE)
 [1] 12
 ```
 
-## Vectors as arguments
-
-A common reason to create a vector from scratch is to use in a function argument. The `quantile()` function will calculate a quantile for a given vector of numeric values. We set the quantile using the `probs` argument. We also need to set `na.rm = TRUE`, since there are `NA` values in the `weight` column.
-
-
-``` r
-quantile(complete_old$weight, probs = 0.25, na.rm = TRUE)
-```
-
-``` output
-25% 
- 24 
-```
-
-Now we get back the 25% quantile value for weights. However, we often want to know more than one quantile. Luckily, the `probs` argument is **vectorized**, meaning it can take a whole vector of values. Let's try getting the 25%, 50% (median), and 75% quantiles all at once.
-
-
-``` r
-quantile(complete_old$weight, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
-```
-
-``` output
-25% 50% 75% 
- 24  42  53 
-```
-
-While the `c()` function is very flexible, it doesn't necessarily scale well. If you want to generate a long vector from scratch, you probably don't want to type everything out manually. There are a few functions that can help generate vectors.
-
-First, putting `:` between two numbers will generate a vector of integers starting with the first number and ending with the last. The `seq()` function allows you to generate similar sequences, but changing by any amount.
-
-
-``` r
-# generates a sequence of integers
-1:10
-```
-
-``` output
- [1]  1  2  3  4  5  6  7  8  9 10
-```
-
-``` r
-# with seq() you can generate sequences with a combination of:
-# from: starting value
-# to: ending value
-# by: how much should each entry increase
-# length.out: how long should the resulting vector be
-seq(from = 0, to = 1, by = 0.1)
-```
-
-``` output
- [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
-```
-
-``` r
-seq(from = 0, to = 1, length.out = 50)
-```
-
-``` output
- [1] 0.00000000 0.02040816 0.04081633 0.06122449 0.08163265 0.10204082
- [7] 0.12244898 0.14285714 0.16326531 0.18367347 0.20408163 0.22448980
-[13] 0.24489796 0.26530612 0.28571429 0.30612245 0.32653061 0.34693878
-[19] 0.36734694 0.38775510 0.40816327 0.42857143 0.44897959 0.46938776
-[25] 0.48979592 0.51020408 0.53061224 0.55102041 0.57142857 0.59183673
-[31] 0.61224490 0.63265306 0.65306122 0.67346939 0.69387755 0.71428571
-[37] 0.73469388 0.75510204 0.77551020 0.79591837 0.81632653 0.83673469
-[43] 0.85714286 0.87755102 0.89795918 0.91836735 0.93877551 0.95918367
-[49] 0.97959184 1.00000000
-```
-
-``` r
-seq(from = 0, by = 0.01, length.out = 20)
-```
-
-``` output
- [1] 0.00 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.10 0.11 0.12 0.13 0.14
-[16] 0.15 0.16 0.17 0.18 0.19
-```
-
-Finally, the `rep()` function allows you to repeat a value, or even a whole vector, as many times as you want, and works with any type of vector.
-
-
-``` r
-# repeats "a" 12 times
-rep("a", times = 12)
-```
-
-``` output
- [1] "a" "a" "a" "a" "a" "a" "a" "a" "a" "a" "a" "a"
-```
-
-``` r
-# repeats this whole sequence 4 times
-rep(c("a", "b", "c"), times = 4)
-```
-
-``` output
- [1] "a" "b" "c" "a" "b" "c" "a" "b" "c" "a" "b" "c"
-```
-
-``` r
-# repeats each value 4 times
-rep(1:10, each = 4)
-```
-
-``` output
- [1]  1  1  1  1  2  2  2  2  3  3  3  3  4  4  4  4  5  5  5  5  6  6  6  6  7
-[26]  7  7  7  8  8  8  8  9  9  9  9 10 10 10 10
-```
-
-::::::::::::::::::::::::::::::::::::: challenge 
-
-## Challenge 2: Creating sequences
-
-1. Write some code to generate the following vector:
-
-
-``` output
- [1] -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3
-```
-
-:::::::::::::::::::::::: solution 
-
-
-``` r
-rep(-3:3, 3)
-```
-
-``` output
- [1] -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3
-```
-
-``` r
-# this also works
-rep(seq(from = -3, to = 3, by = 1), 3)
-```
-
-``` output
- [1] -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3
-```
-
-``` r
-# you might also store the sequence as an intermediate vector
-
-my_seq <- seq(from = -3, to = 3, by = 1)
-rep(my_seq, 3)
-```
-
-``` output
- [1] -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3 -3 -2 -1  0  1  2  3
-```
-
-::::::::::::::::::::::::
-
-2. Calculate the quantiles for the `complete_old` hindfoot lengths at every 5% level (0%, 5%, 10%, 15%, etc.)
-
-:::::::::::::::::::::::: solution 
-
-
-``` r
-quantile(complete_old$hindfoot_length, 
-         probs = seq(from = 0, to = 1, by = 0.05),
-         na.rm = T)
-```
-
-``` output
-  0%   5%  10%  15%  20%  25%  30%  35%  40%  45%  50%  55%  60%  65%  70%  75% 
-   6   16   17   19   20   21   22   31   33   34   35   35   36   36   36   37 
- 80%  85%  90%  95% 100% 
-  37   39   49   51   70 
-```
-
-::::::::::::::::::::::::
-::::::::::::::::::::::::::::::::::::::::::::::::
-
-
 ## Building with vectors
 
 We have now seen vectors in a few different forms: as columns in a data.frame and as single vectors. However, they can be manipulated into lots of other shapes and forms. Some other common forms are:
@@ -780,18 +614,39 @@ We have now seen vectors in a few different forms: as columns in a data.frame an
 
 ### Factors
 
-We will spend a bit more time talking about factors, since they are often a challenging type of data to work with. We can create a factor from scratch by putting a character vector made using `c()` into the `factor()` function:
+We will spend a bit more time talking about factors, since they are often a challenging type of data to work with. 
+
+To give a practical example of how this is useful, let's say we want to customize a plot that shows the average hind foot lenght per sex:
 
 
 ``` r
-sex <- factor(c("male", "female", "female", "male", "female", NA))
+ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
+  geom_bar(stat = "summary", fun = "mean")
+```
+
+``` warning
+Warning: Removed 2733 rows containing non-finite outside the scale range
+(`stat_summary()`).
+```
+
+<img src="fig/how-r-thinks-about-data-rendered-avg_lenght_sex-1.png" alt="Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex" width="600" height="600" style="display: block; margin: auto;" />
+
+Depending on our purpose, we might want to change the order of the categories on the x-axis, or change the labels.
+We can do this by setting our desired variable as a factor.
+Let's start from the basics, understanding how factors work. 
+
+We can create a factor from scratch by putting a character vector made using `c()` into the `factor()` function:
+
+
+``` r
+sex <- factor(c("M", "F", "F", "M", "F", NA))
 
 sex
 ```
 
 ``` output
-[1] male   female female male   female <NA>  
-Levels: female male
+[1] M    F    F    M    F    <NA>
+Levels: F M
 ```
 
 We can inspect the levels of the factor using the `levels()` function:
@@ -802,7 +657,7 @@ levels(sex)
 ```
 
 ``` output
-[1] "female" "male"  
+[1] "F" "M"
 ```
 
 The **`forcats`** package from the `tidyverse` has a lot of convenient functions for working with factors. We will show you a few common operations, but the `forcats` package has many more useful functions.
@@ -812,22 +667,22 @@ The **`forcats`** package from the `tidyverse` has a lot of convenient functions
 library(forcats)
 
 # change the order of the levels
-fct_relevel(sex, c("male", "female"))
-```
-
-``` output
-[1] male   female female male   female <NA>  
-Levels: male female
-```
-
-``` r
-# change the names of the levels
-fct_recode(sex, "M" = "male", "F" = "female")
+fct_relevel(sex, c("M", "F"))
 ```
 
 ``` output
 [1] M    F    F    M    F    <NA>
-Levels: F M
+Levels: M F
+```
+
+``` r
+# change the names of the levels
+fct_recode(sex, "Male" = "M", "Female" = "F")
+```
+
+``` output
+[1] Male   Female Female Male   Female <NA>  
+Levels: Female Male
 ```
 
 ``` r
@@ -836,9 +691,43 @@ fct_na_value_to_level(sex, "(Missing)")
 ```
 
 ``` output
-[1] male      female    female    male      female    (Missing)
-Levels: female male (Missing)
+[1] M         F         F         M         F         (Missing)
+Levels: F M (Missing)
 ```
+
+Now, we can do this to our `surveys$sex` variable to change our actual dataset.
+
+
+``` r
+# Change our variable type to factor
+surveys$sex <- factor(surveys$sex)
+
+# Show what levels or categories our factor variable has
+levels(surveys$sex)
+```
+
+``` output
+[1] "F" "M"
+```
+
+
+``` r
+# The same steps we did before to change our factor variable
+surveys$sex <-fct_relevel(surveys$sex, c("M", "F"))
+surveys$sex <-fct_recode(surveys$sex, "Male" = "M", "Female" = "F")
+surveys$sex <-fct_na_value_to_level(surveys$sex, "(Missing)")
+
+# Now the plot
+ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
+  geom_bar(stat = "summary", fun = "mean")
+```
+
+``` warning
+Warning: Removed 2733 rows containing non-finite outside the scale range
+(`stat_summary()`).
+```
+
+<img src="fig/how-r-thinks-about-data-rendered-factor-sex-plot-1.png" alt="" width="600" height="600" style="display: block; margin: auto;" />
 
 In general, it is a good practice to leave your categorical data as a **character** vector until you need to use a factor. Here are some reasons you might need a factor:
 
@@ -855,7 +744,7 @@ as.character(sex)
 ```
 
 ``` output
-[1] "male"   "female" "female" "male"   "female" NA      
+[1] "M" "F" "F" "M" "F" NA 
 ```
 
 However, you need to be careful if you're somehow working with a factor that has numbers as its levels:
