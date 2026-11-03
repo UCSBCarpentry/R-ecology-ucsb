@@ -66,22 +66,15 @@ exercises: 0
 
 
 
+## Manipulating data
+
+To start clean in this episode, we can take our now usual process of, first, loading the required libraries, and second, reading our data.
+
+
 ``` r
 library(tidyverse)
 ```
 
-## Importing data
-
-Up until this point, we have been working with the `complete_old` dataframe contained in the `ratdat` package. However, you typically won't access data from an R package; it is much more common to access data files stored somewhere on your computer. We are now going to start using the data in our `cleaned` directory inside the `data` directory that you downloaded at the beginning of the lesson ([instructions here](https://datacarpentry.github.io/R-ecology-lesson/introduction-r-rstudio.html#organizing-your-project-directory)). This file is called `surveys_complete_77_89.csv`.
-
-
-### File paths
-
-When we reference other files from an R script, we need to give R precise instructions on where those files are. We do that using something called a **file path**. It looks something like this: `"Documents/Manuscripts/Chapter_2.txt"`. This path would tell your computer how to get from whatever folder contains the `Documents` folder all the way to the `.txt` file.
-
-There are two kinds of paths: **absolute** and **relative**. Absolute paths are specific to a particular computer, whereas relative paths are relative to a certain folder. Because we are keeping all of our work in the `R-Ecology-Workshop` folder, all of our paths can be relative to this folder.
-
-Now, let's read our CSV file into R and store it in an object named `surveys`. We will use the `read_csv` function from the `tidyverse`'s `readr` package, and the argument we give will be the **relative path** to the CSV file.
 
 
 ``` r
@@ -98,48 +91,6 @@ dbl (7): record_id, month, day, year, plot_id, hindfoot_length, weight
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
-
-:::::::::::::::::::::::::::::::::::::::::: callout
-
-Typing out paths can be error prone, so we can utilize a keyboard shortcut. Inside the parentheses of `read_csv()`, type out a pair of quotes and put your cursor between them. Then hit <kbd>Tab</kbd>. A small menu showing your folders and files should show up. You can use the <kbd>↑</kbd> and <kbd>↓</kbd> keys to move through the options, or start typing to narrow them down. You can hit <kbd>Enter</kbd> to select a file or folder, and hit <kbd>Tab</kbd> again to continue building the file path. This might take a bit of getting used to, but once you get the hang of it, it will speed up writing file paths and reduce the number of mistakes you make.
-
-::::::::::::::::::::::::::::::::::::::::::
-
-You may have noticed a bit of feedback from R when you ran the last line of code. We got some useful information about the CSV file we read in. We can see:
-
-- the number of rows and columns
-- the **delimiter** of the file, which is how values are separated, a comma `","`
-- a set of columns that were **parsed** as various vector types
-  - the file has 6 character columns and 7 numeric columns
-  - we can see the names of the columns for each type
-  
- 
-When working with the output of a new function, it's often a good idea to check the `class()`:
-
-
-``` r
-class(surveys)
-```
-
-``` output
-[1] "spec_tbl_df" "tbl_df"      "tbl"         "data.frame" 
-```
-
-Whoa! What is this thing? It has multiple classes? Well, it's called a `tibble`, and it is the `tidyverse` version of a data.frame. It *is* a data.frame, but with some added perks. It prints out a little more nicely, it highlights `NA` values and negative values in red, and it will generally communicate with you more (in terms of warnings and errors, which is a good thing).
-
-:::::::::::::::::::::::::::::::::::::::::: callout
-
-**`tidyverse` vs. base R**
-
-As we begin to delve more deeply into the `tidyverse`, we should briefly pause to mention some of the reasons for focusing on the `tidyverse` set of tools. In R, there are often many ways to get a job done, and there are other approaches that can accomplish tasks similar to the `tidyverse`.
-
-The phrase **base R** is used to refer to approaches that utilize functions contained in R's default packages. We have already used some base R functions, such as `str()`, `head()`, and `mean()`, and we will be using more scattered throughout this lesson. However, there are some key base R approaches we will not be teaching. These include square bracket subsetting and base plotting. You may come across code written by other people that looks like `surveys[1:10, 2]` or `plot(surveys$weight, surveys$hindfoot_length)`, which are base R commands. If you're interested in learning more about these approaches, you can check out other Carpentries lessons like the [Software Carpentry Programming with R](https://swcarpentry.github.io/r-novice-inflammation/) lesson.
-
-We choose to teach the `tidyverse` set of packages because they share a similar syntax and philosophy, making them consistent and producing highly readable code. They are also very flexible and powerful, with a growing number of packages designed according to similar principles and to work well with the rest of the packages. The `tidyverse` packages tend to have very clear documentation and wide array of learning materials that tend to be written with novice users in mind. Finally, the `tidyverse` has only continued to grow, and has strong support from RStudio, which implies that these approaches will be relevant into the future.
-
-::::::::::::::::::::::::::::::::::::::::::
-
-## Manipulating data
 
 One of the most important skills for working with data in R is the ability to manipulate, modify, and reshape data. The `dplyr` and `tidyr` packages in the `tidyverse` provide a series of powerful functions for many common data manipulation tasks.
 

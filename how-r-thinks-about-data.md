@@ -306,6 +306,76 @@ complete_old$year
 
 What we get back is a whole bunch of numbers, the entries in the `year` column printed out in order.
 
+## Importing data
+
+Up until this point, we have been working with the `complete_old` dataframe contained in the `ratdat` package. However, you typically won't access data from an R package; it is much more common to access data files stored somewhere on your computer. We are now going to start using the data in our `cleaned` directory inside the `data` directory that you downloaded at the beginning of the lesson ([instructions here](https://datacarpentry.github.io/R-ecology-lesson/introduction-r-rstudio.html#organizing-your-project-directory)). This file is called `surveys_complete_77_89.csv`.
+
+
+### File paths
+
+When we reference other files from an R script, we need to give R precise instructions on where those files are. We do that using something called a **file path**. It looks something like this: `"Documents/Manuscripts/Chapter_2.txt"`. This path would tell your computer how to get from whatever folder contains the `Documents` folder all the way to the `.txt` file.
+
+There are two kinds of paths: **absolute** and **relative**. Absolute paths are specific to a particular computer, whereas relative paths are relative to a certain folder. Because we are keeping all of our work in the `R-Ecology-Workshop` folder, all of our paths can be relative to this folder.
+
+Now, let's read our CSV file into R and store it in an object named `surveys`. We will use the `read_csv` function from the `tidyverse`'s `readr` package, and the argument we give will be the **relative path** to the CSV file.
+
+
+``` r
+surveys <- read_csv("data/cleaned/surveys_complete_77_89.csv")
+```
+
+``` output
+Rows: 16878 Columns: 13
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (6): species_id, sex, genus, species, taxa, plot_type
+dbl (7): record_id, month, day, year, plot_id, hindfoot_length, weight
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+:::::::::::::::::::::::::::::::::::::::::: callout
+
+Typing out paths can be error prone, so we can utilize a keyboard shortcut. Inside the parentheses of `read_csv()`, type out a pair of quotes and put your cursor between them. Then hit <kbd>Tab</kbd>. A small menu showing your folders and files should show up. You can use the <kbd>↑</kbd> and <kbd>↓</kbd> keys to move through the options, or start typing to narrow them down. You can hit <kbd>Enter</kbd> to select a file or folder, and hit <kbd>Tab</kbd> again to continue building the file path. This might take a bit of getting used to, but once you get the hang of it, it will speed up writing file paths and reduce the number of mistakes you make.
+
+::::::::::::::::::::::::::::::::::::::::::
+
+You may have noticed a bit of feedback from R when you ran the last line of code. We got some useful information about the CSV file we read in. We can see:
+
+- the number of rows and columns
+- the **delimiter** of the file, which is how values are separated, a comma `","`
+- a set of columns that were **parsed** as various vector types
+  - the file has 6 character columns and 7 numeric columns
+  - we can see the names of the columns for each type
+  
+ 
+When working with the output of a new function, it's often a good idea to check the `class()`:
+
+
+``` r
+class(surveys)
+```
+
+``` output
+[1] "spec_tbl_df" "tbl_df"      "tbl"         "data.frame" 
+```
+
+Whoa! What is this thing? It has multiple classes? Well, it's called a `tibble`, and it is the `tidyverse` version of a data.frame. It *is* a data.frame, but with some added perks. It prints out a little more nicely, it highlights `NA` values and negative values in red, and it will generally communicate with you more (in terms of warnings and errors, which is a good thing).
+
+:::::::::::::::::::::::::::::::::::::::::: callout
+
+**`tidyverse` vs. base R**
+
+As we begin to delve more deeply into the `tidyverse`, we should briefly pause to mention some of the reasons for focusing on the `tidyverse` set of tools. In R, there are often many ways to get a job done, and there are other approaches that can accomplish tasks similar to the `tidyverse`.
+
+The phrase **base R** is used to refer to approaches that utilize functions contained in R's default packages. We have already used some base R functions, such as `str()`, `head()`, and `mean()`, and we will be using more scattered throughout this lesson. However, there are some key base R approaches we will not be teaching. These include square bracket subsetting and base plotting. You may come across code written by other people that looks like `surveys[1:10, 2]` or `plot(surveys$weight, surveys$hindfoot_length)`, which are base R commands. If you're interested in learning more about these approaches, you can check out other Carpentries lessons like the [Software Carpentry Programming with R](https://swcarpentry.github.io/r-novice-inflammation/) lesson.
+
+We choose to teach the `tidyverse` set of packages because they share a similar syntax and philosophy, making them consistent and producing highly readable code. They are also very flexible and powerful, with a growing number of packages designed according to similar principles and to work well with the rest of the packages. The `tidyverse` packages tend to have very clear documentation and wide array of learning materials that tend to be written with novice users in mind. Finally, the `tidyverse` has only continued to grow, and has strong support from RStudio, which implies that these approaches will be relevant into the future.
+
+::::::::::::::::::::::::::::::::::::::::::
+
+
 ## Vectors: the building block of data
 
 You might have noticed that our last result looked different from when we printed out the `complete_old` data.frame itself. That's because it is not a data.frame, it is a **vector**. A vector is a 1-dimensional series of values, in this case a vector of numbers representing years.
@@ -324,7 +394,9 @@ There are 4 main types of vectors (also known as *atomic vectors*):
 
 Vectors can only be of a **single type**. Since each column in a data.frame is a vector, this means an accidental character following a number, like `29,` can change the type of the whole vector. Mixing up vector types is one of the most common mistakes in R, and it can be tricky to figure out. It's often very useful to check the types of vectors.
 
-To create a vector from scratch, we can use the `c()` function, putting values inside, separated by commas.
+To continue the example we have been using, let's say we collected the weight and sex of five additional samples in our study, and we will be writing the data into R manually.
+
+We can create a vector from scratch with the weights, as for this we can use the `c()` function, putting values inside, separated by commas.
 
 
 ``` r
@@ -335,46 +407,46 @@ c(1, 2, 5, 12, 4)
 [1]  1  2  5 12  4
 ```
 
-As you can see, those values get printed out in the console, just like with `complete_old$year`. To store this vector so we can continue to work with it, we need to assign it to an object.
+As you can see, those values get printed out in the console, just like with `complete_old$year` or `surveys$year`. To store this vector so we can continue to work with it, we need to assign it to an object.
 
 
 ``` r
-num <- c(1, 2, 5, 12, 4)
+wt <- c(10, 62, 53, 12, 45)
 ```
 
-You can check what kind of object `num` is with the `class()` function.
+You can check what kind of object `wt` is with the `class()` function.
 
 
 ``` r
-class(num)
+class(wt)
 ```
 
 ``` output
 [1] "numeric"
 ```
 
-We see that `num` is a `numeric` vector.
+We see that `wt` is a `numeric` vector.
 
-Let's try making a character vector:
+Let's try making a character vector for the sex data:
 
 
 ``` r
-char <- c("apple", "pear", "grape")
-class(char)
+sex <- c("F", "M", "F", "F", "M")
+class(sex)
 ```
 
 ``` output
 [1] "character"
 ```
 
-Remember that each entry, like `"apple"`, needs to be surrounded by quotes, and entries are separated with commas. If you do something like `"apple, pear, grape"`, you will have only a single entry containing that whole string.
+Remember that each entry, like `"F"`, needs to be surrounded by quotes, and entries are separated with commas. If you do something like `"F, F, M"`, you will have only a single entry containing that whole string.
 
-Finally, let's make a logical vector:
+To demonstrate a logical type of vector, let's say we want a vector that says if the animals sampled weigh more than 50 grams:
 
 
 ``` r
-logi <- c(TRUE, FALSE, TRUE, TRUE)
-class(logi)
+is_heavy <- c(FALSE, TRUE, TRUE, FALSE, FALSE)
+class(is_heavy)
 ```
 
 ``` output
@@ -487,14 +559,14 @@ One of the great things about R is how it handles missing data, which can be tri
 
 
 ``` r
-weights <- c(25, 34, 12, NA, 42)
+wt <- c(25, 34, 12, NA, 42)
 ```
 
 R doesn't make assumptions about how you want to handle missing data, so if we pass this vector to a numeric function like `min()`, it won't know what to do, so it returns `NA`:
 
 
 ``` r
-min(weights)
+min(wt)
 ```
 
 ``` output
@@ -505,7 +577,7 @@ This is a very good thing, since we won't accidentally forget to consider our mi
 
 
 ``` r
-min(weights, na.rm = TRUE)
+min(wt, na.rm = TRUE)
 ```
 
 ``` output
