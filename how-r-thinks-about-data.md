@@ -1,9 +1,7 @@
 ---
 title: "Exploring and understanding data"
-# FIXME: 'teaching' timing is inclusive of 'exercises' timing. 
-# We should split it at some point.
 teaching: 60
-exercises: 0
+exercises: 10
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions 
@@ -16,7 +14,6 @@ exercises: 0
 
 - Explore the structure and content of data.frames
 - Understand vector types and missing data
-- Use vectors as function arguments
 - Create and convert factors
 - Understand how R assigns values to objects
 - Use the RStudio help interface to get help with R functions
@@ -624,11 +621,6 @@ ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
   geom_bar(stat = "summary", fun = "mean")
 ```
 
-``` warning
-Warning: Removed 2733 rows containing non-finite outside the scale range
-(`stat_summary()`).
-```
-
 <img src="fig/how-r-thinks-about-data-rendered-avg_lenght_sex-1.png" alt="Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex" width="600" height="600" style="display: block; margin: auto;" />
 
 Depending on our purpose, we might want to change the order of the categories on the x-axis, or change the labels.
@@ -722,12 +714,7 @@ ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
   geom_bar(stat = "summary", fun = "mean")
 ```
 
-``` warning
-Warning: Removed 2733 rows containing non-finite outside the scale range
-(`stat_summary()`).
-```
-
-<img src="fig/how-r-thinks-about-data-rendered-factor-sex-plot-1.png" alt="" width="600" height="600" style="display: block; margin: auto;" />
+<img src="fig/how-r-thinks-about-data-rendered-factor-sex-plot-1.png" alt="Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex. Now with a different ordering and labels of the sex variable" width="600" height="600" style="display: block; margin: auto;" />
 
 In general, it is a good practice to leave your categorical data as a **character** vector until you need to use a factor. Here are some reasons you might need a factor:
 
@@ -865,11 +852,113 @@ You will be naming a lot of objects in R, and there are a few common naming rule
 - you can use a style guide like [Google's](https://google.github.io/styleguide/Rguide.xml) or
 [tidyverse's](https://style.tidyverse.org/)
 
+## Exploratory Data Analysis (EDA)
+
+The techniques we have learned so far for describing and plotting data form the foundation of **"Exploratory Data Analysis (EDA)"**.
+EDA allows you to gain an initial understanding of your dataset, detect outliers or errors, and uncover potential relationships between variables.
+It is a critical first step that informs how you clean, transform, and model your data in later stages.
+
+For example, let's dive deeper into one of our continuous variables, `weight`.
+We can start with a histogram, which visualizes the distribution of values across the dataset.
+
+
+``` r
+ggplot(data = surveys, aes(x = weight)) +
+  geom_histogram()
+```
+
+``` output
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+```
+
+<img src="fig/how-r-thinks-about-data-rendered-hist-1.png" alt="Histogram of the weight of our samples" width="600" height="600" style="display: block; margin: auto;" />
+
+We can see the majority of samples weigh between 0 and 50 grams, but there is also an important number between 90 and 150 grams.
+
+We can further explore this distribution with a function we have already learned, the `summary()` function.
+This shows the minimum, 1st quartile, median (or 2nd quartile), mean, 3rd quartile, maximum, and number of NAs for numerical variables.
+
+
+``` r
+summary(surveys$weight)
+```
+
+``` output
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     NAs 
+   4.00   24.00   42.00   53.22   53.00  278.00    1692 
+```
+
+Furthermore, we can any calculate any quantile using the `quantile()` function.
+For example, to find the weight threshold below which 10% of our data falls:
+
+
+``` r
+quantile(complete_old$weight, probs = 0.1, na.rm = TRUE)
+```
+
+``` output
+10% 
+ 11 
+```
+If we want to calculate multiple quantiles at once, we can do that with the help of vectors.
+Let's say we want to compare the minimum, the 10th and 90th percentiles, and the maximum:
+
+
+``` r
+quantile(complete_old$weight, probs = c(0, 0.1, 0.9, 1), na.rm = TRUE)
+```
+
+``` output
+  0%  10%  90% 100% 
+   4   11  129  278 
+```
+This reveals a striking difference within our sample!
+While the lightest 10% of animals weigh between 4 and 10 grams (from the minimum to the 10th percentile), the heaviest 10% weigh significantly more, between 129 and 278 grams (from the 90th percentile to the maximum).
+This is a common pattern in R: passing a vector of values into a function argument allows us to run calculations on multiple inputs simultaneously.
+
+We don't always have to manually type out every vector.
+For instance, the `seq()` function automatically generates a sequence of values.
+To calculate quantiles at every 10th percentile, we can create the vector like this::
+
+
+``` r
+seq(from = 0, to = 1, by = 0.1)
+```
+
+``` output
+ [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0
+```
+And use it in the quantile calculation like this:
+
+
+``` r
+quantile(complete_old$weight, probs = seq(from = 0, to = 1, by = 0.1), na.rm = TRUE)
+```
+
+``` output
+  0%  10%  20%  30%  40%  50%  60%  70%  80%  90% 100% 
+   4   11   21   28   38   42   46   49   70  129  278 
+```
+
+:::::::::::::::::::::::::::::::::::: challenge 
+
+### Do your own EDA
+
+Pick one or more variables from the dataset and explore them. In your response:
+
+  - Share at least two insights you discovered from your analysis
+  - Explain which R functions you used and why you chose them
+  - Mention any analysis you wanted to perform but didn't know how to code yet in R.
+
+:::::::::::::::::::::::::::::::::::::::::::::::
+
+
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
 - functions like `head()`, `str()`, and `summary()` are useful for exploring data.frames
 - most things in R are vectors, vectors stitched together, or functions
 - make sure to use `class()` to check vector types, especially when using new functions
 - factors can be useful, but behave differently from character vectors
+- Exploratory Data Analysis (EDA) is a common first step in a data project
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
