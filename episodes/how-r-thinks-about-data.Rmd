@@ -1,9 +1,7 @@
 ---
 title: "Exploring and understanding data"
-# FIXME: 'teaching' timing is inclusive of 'exercises' timing. 
-# We should split it at some point.
 teaching: 60
-exercises: 0
+exercises: 10
 ---
 
 :::::::::::::::::::::::::::::::::::::: questions 
@@ -16,7 +14,6 @@ exercises: 0
 
 - Explore the structure and content of data.frames
 - Understand vector types and missing data
-- Use vectors as function arguments
 - Create and convert factors
 - Understand how R assigns values to objects
 - Use the RStudio help interface to get help with R functions
@@ -375,7 +372,7 @@ We will spend a bit more time talking about factors, since they are often a chal
 
 To give a practical example of how this is useful, let's say we want to customize a plot that shows the average hind foot lenght per sex:
 
-```{r avg_lenght_sex, fig.alt = "Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex"}
+```{r avg_lenght_sex, warning=FALSE, fig.alt = "Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex"}
 ggplot(data = surveys, mapping = aes(x = sex, y = hindfoot_length)) +
   geom_bar(stat = "summary", fun = "mean")
 ```
@@ -424,7 +421,7 @@ surveys$sex <- factor(surveys$sex)
 levels(surveys$sex)
 ```
 
-``` {r factor-sex-plot}
+``` {r factor-sex-plot, warning=FALSE, fig.alt = "Bar chart using the sex (x-axis) and hindfoot_length (y-axis) variables, showing the average hindfoot_length by sex. Now with a different ordering and labels of the sex variable"}
 # The same steps we did before to change our factor variable
 surveys$sex <-fct_relevel(surveys$sex, c("M", "F"))
 surveys$sex <-fct_recode(surveys$sex, "Male" = "M", "Female" = "F")
@@ -533,11 +530,77 @@ You will be naming a lot of objects in R, and there are a few common naming rule
 - you can use a style guide like [Google's](https://google.github.io/styleguide/Rguide.xml) or
 [tidyverse's](https://style.tidyverse.org/)
 
+## Exploratory Data Analysis (EDA)
+
+The techniques we have learned so far for describing and plotting data form the foundation of **"Exploratory Data Analysis (EDA)"**.
+EDA allows you to gain an initial understanding of your dataset, detect outliers or errors, and uncover potential relationships between variables.
+It is a critical first step that informs how you clean, transform, and model your data in later stages.
+
+For example, let's dive deeper into one of our continuous variables, `weight`.
+We can start with a histogram, which visualizes the distribution of values across the dataset.
+
+```{r hist, warning=FALSE, fig.alt = "Histogram of the weight of our samples"}
+ggplot(data = surveys, aes(x = weight)) +
+  geom_histogram()
+```
+
+We can see the majority of samples weigh between 0 and 50 grams, but there is also an important number between 90 and 150 grams.
+
+We can further explore this distribution with a function we have already learned, the `summary()` function.
+This shows the minimum, 1st quartile, median (or 2nd quartile), mean, 3rd quartile, maximum, and number of NAs for numerical variables.
+
+```{r summ-eda}
+summary(surveys$weight)
+```
+
+Furthermore, we can any calculate any quantile using the `quantile()` function.
+For example, to find the weight threshold below which 10% of our data falls:
+
+```{r quantiles}
+quantile(complete_old$weight, probs = 0.1, na.rm = TRUE)
+```
+If we want to calculate multiple quantiles at once, we can do that with the help of vectors.
+Let's say we want to compare the minimum, the 10th and 90th percentiles, and the maximum:
+
+```{r quantiles-ext}
+quantile(complete_old$weight, probs = c(0, 0.1, 0.9, 1), na.rm = TRUE)
+```
+This reveals a striking difference within our sample!
+While the lightest 10% of animals weigh between 4 and 10 grams (from the minimum to the 10th percentile), the heaviest 10% weigh significantly more, between 129 and 278 grams (from the 90th percentile to the maximum).
+This is a common pattern in R: passing a vector of values into a function argument allows us to run calculations on multiple inputs simultaneously.
+
+We don't always have to manually type out every vector.
+For instance, the `seq()` function automatically generates a sequence of values.
+To calculate quantiles at every 10th percentile, we can create the vector like this::
+
+```{r seq}
+seq(from = 0, to = 1, by = 0.1)
+```
+And use it in the quantile calculation like this:
+
+```{r quantiles-seq}
+quantile(complete_old$weight, probs = seq(from = 0, to = 1, by = 0.1), na.rm = TRUE)
+```
+
+:::::::::::::::::::::::::::::::::::: challenge 
+
+### Do your own EDA
+
+Pick one or more variables from the dataset and explore them. In your response:
+
+  - Share at least two insights you discovered from your analysis
+  - Explain which R functions you used and why you chose them
+  - Mention any analysis you wanted to perform but didn't know how to code yet in R.
+
+:::::::::::::::::::::::::::::::::::::::::::::::
+
+
 ::::::::::::::::::::::::::::::::::::: keypoints 
 
 - functions like `head()`, `str()`, and `summary()` are useful for exploring data.frames
 - most things in R are vectors, vectors stitched together, or functions
 - make sure to use `class()` to check vector types, especially when using new functions
 - factors can be useful, but behave differently from character vectors
+- Exploratory Data Analysis (EDA) is a common first step in a data project
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
