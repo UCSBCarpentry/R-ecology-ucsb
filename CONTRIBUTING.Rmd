@@ -132,8 +132,7 @@ Throughout the lesson, we use different code chunk options, mostly
 to change when and how the code in the chunks is being executed.
 Below you will find a list of the most common options we use and
 information on how we use them.
-More information on RMarkdown code chunk options
-can be found [here](https://yihui.org/knitr/options). When in doubt,
+Read more information about [RMarkdown code chunk options](https://yihui.org/knitr/options). When in doubt,
 consult the `Rmd` files for examples.
 
 ##### `answer = [FALSE | TRUE]`
